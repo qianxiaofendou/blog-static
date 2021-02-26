@@ -4,7 +4,7 @@
   <url>
     <loc>http://sunshiyong.com/2018/10/26/webpack-optimize/</loc>
     
-    <lastmod>2018-10-26T12:57:52.000Z</lastmod>
+    <lastmod>2018-10-29T09:51:47.000Z</lastmod>
     
   </url>
   
@@ -23,6 +23,13 @@
   </url>
   
   <url>
+    <loc>http://sunshiyong.com/2018/05/07/date-extend/</loc>
+    
+    <lastmod>2018-09-04T12:27:09.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://sunshiyong.com/2018/07/09/check-if-element-is-hidden/</loc>
     
     <lastmod>2018-09-04T12:27:09.000Z</lastmod>
@@ -31,13 +38,6 @@
   
   <url>
     <loc>http://sunshiyong.com/2018/05/08/downloadfile-ajax/</loc>
-    
-    <lastmod>2018-09-04T12:27:09.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://sunshiyong.com/2018/05/07/date-extend/</loc>
     
     <lastmod>2018-09-04T12:27:09.000Z</lastmod>
     
@@ -58,14 +58,14 @@
   </url>
   
   <url>
-    <loc>http://sunshiyong.com/categories/index.html</loc>
+    <loc>http://sunshiyong.com/tags/index.html</loc>
     
     <lastmod>2018-09-04T12:27:09.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://sunshiyong.com/tags/index.html</loc>
+    <loc>http://sunshiyong.com/categories/index.html</loc>
     
     <lastmod>2018-09-04T12:27:09.000Z</lastmod>
     
