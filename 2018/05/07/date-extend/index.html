@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sunshiyong.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;最近在处理时间的时候发现一个问题，不能继承Date上面的方法，之前使用其它的对象都没出现过问题，我们先看下面这个例子，使用经典的寄生组合继承">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用javascript实现Date对象的继承">
+<meta property="og:url" content="http://sunshiyong.com/2018/05/07/date-extend/index.html">
+<meta property="og:site_name" content="zihan-smile">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;最近在处理时间的时候发现一个问题，不能继承Date上面的方法，之前使用其它的对象都没出现过问题，我们先看下面这个例子，使用经典的寄生组合继承">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-07T03:48:18.000Z">
+<meta property="article:modified_time" content="2021-04-25T02:45:00.343Z">
+<meta property="article:author" content="zihan-smile">
+<meta property="article:tag" content="date">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sunshiyong.com/2018/05/07/date-extend/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sunshiyong.com/2018/05/07/date-extend/","path":"2018/05/07/date-extend/","title":"使用javascript实现Date对象的继承"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用javascript实现Date对象的继承 | zihan-smile</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?13dec2f8d86bd3f219717cfdf27bf555"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">zihan-smile</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zihan-smile"
+      src="/images/avatar01.png">
+  <p class="site-author-name" itemprop="name">zihan-smile</p>
+  <div class="site-description" itemprop="description">Enjoy Life ! Enjoy Music !</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/zihan-smile" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;zihan-smile" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-fw fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://duanyadong.com/" title="http:&#x2F;&#x2F;duanyadong.com" rel="noopener" target="_blank">oracle进阶</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://jouypub.com/" title="http:&#x2F;&#x2F;jouypub.com" rel="noopener" target="_blank">老K区块链</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sunshiyong.com/2018/05/07/date-extend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar01.png">
+      <meta itemprop="name" content="zihan-smile">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zihan-smile">
+      <meta itemprop="description" content="Enjoy Life ! Enjoy Music !">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用javascript实现Date对象的继承 | zihan-smile">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用javascript实现Date对象的继承
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-07 11:48:18" itemprop="dateCreated datePublished" datetime="2018-05-07T11:48:18+08:00">2018-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2021-04-25 10:45:00" itemprop="dateModified" datetime="2021-04-25T10:45:00+08:00">2021-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>&emsp;&emsp;最近在处理时间的时候发现一个问题，不能继承<code>Date</code>上面的方法，之前使用其它的对象都没出现过问题，我们先看下面这个例子，使用经典的寄生组合继承</p>
+<span id="more"></span>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 经典的js寄生组合式继承</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyDate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">Date</span>.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="built_in">this</span>.abc = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inherits</span>(<span class="params">subClass, superClass</span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Inner</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    Inner.prototype = superClass.prototype;</span><br><span class="line">    subClass.prototype = <span class="keyword">new</span> Inner();</span><br><span class="line">    subClass.prototype.constructor = subClass;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inherits(MyDate, <span class="built_in">Date</span>);</span><br><span class="line"></span><br><span class="line">MyDate.prototype.getTest = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.getTime();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> date = <span class="keyword">new</span> MyDate();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(date.getTest());</span><br></pre></td></tr></table></figure>
+
+<p>运行之后，可以在控制台里面看到如下输出：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VM2356:<span class="number">17</span> Uncaught <span class="built_in">TypeError</span>: <span class="built_in">this</span> is not a <span class="built_in">Date</span> object.</span><br><span class="line">    at MyDate.getTime (&lt;anonymous&gt;)</span><br><span class="line">    at MyDate.getTest (&lt;anonymous&gt;:<span class="number">17</span>:<span class="number">17</span>)</span><br><span class="line">    at &lt;anonymous&gt;:<span class="number">23</span>:18us&gt;:<span class="number">20</span>:<span class="number">17</span>)</span><br><span class="line">    at &lt;anonymous&gt;:<span class="number">26</span>:<span class="number">18</span></span><br></pre></td></tr></table></figure>
+<p>这是什么原因呢，MDN中有提到，JavaScript的日期对象只能通过<code>JavaScript Date</code>作为构造函数来实例化，那么，是不是就无法使用Date来实现继承来呢？</p>
+<p>通过在网上查找，发现了网友给出的很多有趣的答案，现将网上的答案整理如下，不外乎有三种：</p>
+<ul>
+<li>1、比较暴力的方法</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyDate</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> d = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params">that</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> i;</span><br><span class="line">        <span class="keyword">var</span> methods = [<span class="string">&#x27;getDate&#x27;</span>,<span class="string">&#x27;getTime&#x27;</span>,<span class="string">&#x27;getYear&#x27;</span>,<span class="comment">/***/</span>,<span class="string">&#x27;toString&#x27;</span>];</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; methods.length; i++) &#123;</span><br><span class="line">            that[methods[i]] = d[methods[i]]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    init(<span class="built_in">this</span>)</span><br><span class="line">    <span class="built_in">this</span>.MyTest() = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;dd&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方法使用了方法代理，并不能称之为继承</p>
+<ul>
+<li>2、使用es5来实现</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要考虑polyfill情况</span></span><br><span class="line"><span class="built_in">Object</span>.setPrototypeOf = <span class="built_in">Object</span>.setPrototypeOf ||</span><br><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">obj, proto</span>) </span>&#123;</span><br><span class="line">    obj.__proto__ = proto;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用了点技巧的继承，实际上返回的是Date对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">MyDate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// bind属于Function.prototype，接收的参数是：object, param1, params2...</span></span><br><span class="line">    <span class="keyword">var</span> dateInst = <span class="keyword">new</span>(<span class="built_in">Function</span>.prototype.bind.apply(<span class="built_in">Date</span>, [<span class="built_in">Date</span>].concat(<span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>))))();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更改原型指向，否则无法调用MyDate原型上的方法</span></span><br><span class="line">    <span class="comment">// ES6方案中，这里就是[[prototype]]这个隐式原型对象，在没有标准以前就是__proto__</span></span><br><span class="line">    <span class="built_in">Object</span>.setPrototypeOf(dateInst, MyDate.prototype);</span><br><span class="line"></span><br><span class="line">    dateInst.abc = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dateInst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 原型重新指回Date，否则根本无法算是继承</span></span><br><span class="line"><span class="built_in">Object</span>.setPrototypeOf(MyDate.prototype, <span class="built_in">Date</span>.prototype);</span><br><span class="line"></span><br><span class="line">MyDate.prototype.getTest = <span class="function"><span class="keyword">function</span> <span class="title">getTest</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.getTime();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> date = <span class="keyword">new</span> MyDate();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正常输出，譬如1525744465718</span></span><br><span class="line"><span class="built_in">console</span>.log(date.getTest());</span><br></pre></td></tr></table></figure>
+<p>可以看到，用的是非常巧妙的一种做法：</p>
+<p>正常继承的情况如下：</p>
+<p><code>new MyDate()</code>返回实例对象<code>date</code>是由<code>MyDate</code>构造的<br>原型链回溯是: <code>date(MyDate对象)-&gt;date.__proto__-&gt;MyDate.prototype-&gt;MyDate.prototype.__proto__-&gt;Date.prototype</code></p>
+<p>这种做法的继承的情况如下：</p>
+<p><code>new MyDate()</code>返回实例对象date是由Date构造的<br>原型链回溯是: <code>date(Date对象)-&gt;date.__proto__-&gt;MyDate.prototype-&gt;MyDate.prototype.__proto__-&gt;Date.prototype</code></p>
+<p>可以看出，关键点在于：</p>
+<p>构造函数里返回了一个真正的<code>Date</code>对象（由<code>Date</code>构造，所以有这些内部类中的关键<code>[[Class]]</code>标志），所以它有调用<code>Date</code>原型上方法的权利</p>
+<p>构造函数里的<code>Date</code>对象的<code>[[ptototype]]</code>（对外，浏览器中可通过<code>__proto__</code>访问）指向<code>MyDate.prototype</code>，然后<code>MyDate.prototype</code>再指向<code>Date.prototype</code>。</p>
+<p>所以最终的实例对象仍然能进行正常的原型链回溯，回溯到原本Date的所有原型方法</p>
+<ul>
+<li>3、使用ES6的class来实现</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyDate</span> <span class="keyword">extends</span> <span class="title">Date</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>();</span><br><span class="line">        <span class="built_in">this</span>.abc = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="title">getTest</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.getTime();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> date = <span class="keyword">new</span> MyDate();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正常输出，譬如1515638988725</span></span><br><span class="line"><span class="built_in">console</span>.log(date.getTest());</span><br></pre></td></tr></table></figure>
+
+<p>这里的正常输出环境是直接用ES6运行，不经过babel打包，打包后实质上是转化成ES5的，所以效果完全不一样</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/date/" rel="tag"># date</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/08/downloadfile-ajax/" rel="next" title="javascript之ajax 二进制文件下载">
+                  javascript之ajax 二进制文件下载 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zihan-smile</span>
+</div><div><span><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/#/Integrated/index">豫ICP备18017624号-1 </a></span></div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
